@@ -113,20 +113,30 @@ AND Host REGEXP '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$';
 # =========================
 # Remover IPs antigos
 # =========================
-for OLD_IP in $CURRENT_IPS; do
-  KEEP=false
+read -p "Deseja remover IPs antigos? (s/n): " REMOVE_OLD
 
-  for NEW_IP in "${IPS[@]}"; do
-    if [ "$OLD_IP" == "$NEW_IP" ]; then
-      KEEP=true
-      break
+if [ "$REMOVE_OLD" == "s" ]; then
+  echo "[INFO] Sincronizando IPs (removendo antigos)"
+
+  for OLD_IP in $CURRENT_IPS; do
+    KEEP=false
+
+    for NEW_IP in "${IPS[@]}"; do
+      if [ "$OLD_IP" == "$NEW_IP" ]; then
+        KEEP=true
+        break
+      fi
+    done
+
+    if [ "$KEEP" = false ]; then
+      echo "[INFO] Removendo ${DB_NAME}@${OLD_IP}"
+      mariadb -u root -e "DROP USER '${DB_NAME}'@'${OLD_IP}';"
     fi
   done
 
-  if [ "$KEEP" = false ]; then
-    echo "[INFO] Removendo ${DB_NAME}@${OLD_IP}"
-    mariadb -u root -e "DROP USER '${DB_NAME}'@'${OLD_IP}';"
-  fi
+else
+  echo "[INFO] Mantendo IPs antigos (modo append)"
+fi
 done
 
 # =========================
