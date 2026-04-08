@@ -14,6 +14,8 @@ install_if_not_exists php-curl
 install_if_not_exists php-mbstring
 
 if create_file_if_not_exists /etc/fail2ban/jail.local; then
+  echo "[INFO] Criando configuração do Fail2Ban (web)"
+
 cat > /etc/fail2ban/jail.local <<EOF
 [DEFAULT]
 bantime = -1
@@ -35,4 +37,9 @@ enabled = true
 [apache-overflows]
 enabled = true
 EOF
+
+  systemctl restart fail2ban
+
+else
+  echo "[INFO] Fail2Ban já configurado (jail.local existente)"
 fi
