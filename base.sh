@@ -21,10 +21,6 @@ ufw --force enable
 
 install_if_not_exists fail2ban
 
-# Reinicia MariaDB para aplicar
-enable_service mariadb
-systemctl restart mariadb
-
 if create_file_if_not_exists /etc/fail2ban/jail.local; then
 cat > /etc/fail2ban/jail.local <<EOF
 [DEFAULT]
