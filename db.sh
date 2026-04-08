@@ -137,7 +137,6 @@ if [ "$REMOVE_OLD" == "s" ]; then
 else
   echo "[INFO] Mantendo IPs antigos (modo append)"
 fi
-done
 
 # =========================
 # Criar novos acessos
