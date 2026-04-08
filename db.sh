@@ -11,6 +11,24 @@ install_if_not_exists mariadb-server
 enable_service mariadb
 
 # =========================
+# Abrir o mariadb para rede interna
+# =========================
+echo "[INFO] Ajustando bind-address do MariaDB"
+
+CONF_FILE="/etc/mysql/mariadb.conf.d/50-server.cnf"
+
+if grep -q "^bind-address" $CONF_FILE; then
+  sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' $CONF_FILE
+  echo "[INFO] bind-address alterado para 0.0.0.0"
+else
+  echo "bind-address = 0.0.0.0" >> $CONF_FILE
+  echo "[INFO] bind-address adicionado"
+fi
+
+systemctl restart mariadb
+
+
+# =========================
 # Entrada do nome do banco
 # =========================
 read -p "Nome do banco: " DB_NAME
