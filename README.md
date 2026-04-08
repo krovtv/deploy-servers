@@ -1,171 +1,144 @@
 # 🚀 Deploy Servers - Provisionamento Automatizado (Debian)
 
-Scripts em shell para provisionamento automatizado de servidores Debian, com foco em padronização, segurança e reexecução segura.
+Scripts em shell para provisionamento automatizado de servidores Debian, com foco em padronização, automação e consistência de ambiente.
 
-O projeto permite subir rapidamente ambientes organizados e reutilizáveis para:
+O projeto permite subir rapidamente ambientes para:
 
-* 🌐 Servidor Web (Apache + PHP)
-* 🗄️ Servidor de Banco (MariaDB)
-* 🧩 Ambiente completo (Web + Banco)
+- 🌐 Servidor Web (Apache + PHP)
+- 🗄️ Servidor de Banco (MariaDB)
+- 🧩 Ambiente completo (Web + Banco)
 
 ---
 
 ## 📁 Estrutura do Projeto
 
-```bash
 .
-├── lib.sh      # Funções reutilizáveis (instalação, serviços, validações)
-├── base.sh     # Configuração base do sistema (segurança e utilitários)
-├── web.sh      # Provisionamento de servidor web
-├── db.sh       # Provisionamento de banco de dados
-└── full.sh     # Provisionamento completo (web + banco)
-```
+├── lib.sh      # Funções reutilizáveis
+├── base.sh     # Configuração base do sistema
+├── web.sh      # Provisionamento web
+├── db.sh       # Provisionamento banco
+└── full.sh     # Provisionamento completo
 
 ---
 
 ## ⚙️ Requisitos
 
-* Debian (recomendado: versão recente)
-* Acesso root ou sudo
-* Conexão com internet
+- Debian (versão recente recomendada)
+- Acesso root ou sudo
+- Conexão com internet
 
 ---
 
 ## ▶️ Como usar
 
-Clone o repositório:
-
-```bash
 git clone https://github.com/SEU-USUARIO/deploy-servers.git
 cd deploy-servers
-```
-
-Dê permissão de execução:
-
-```bash
 chmod +x *.sh
-```
 
 ---
 
 ## 🌐 Servidor Web
 
-```bash
 sudo ./web.sh
-```
 
-Configura automaticamente:
+Provisiona:
 
-* Apache2
-* PHP-FPM + extensões
-* Módulos essenciais do Apache
-* Fail2Ban (proteção HTTP)
+- Apache2
+- PHP-FPM e extensões
+- Configuração básica do ambiente web
 
 ---
 
 ## 🗄️ Servidor de Banco
 
-```bash
 sudo ./db.sh
-```
 
-Fluxo:
+Provisiona:
 
-* Criação do banco de dados
-* Criação de usuário isolado
-* Geração automática de senha
-* Controle de acesso por IP
-* Sincronização de permissões
-* Configuração de log do MariaDB
-* Integração com Fail2Ban
+- MariaDB
+- Criação de banco e usuário
+- Geração automática de senha
+- Controle de acesso por IP
+- Configuração de acesso remoto (opcional)
 
 ---
 
 ## 🧩 Servidor Completo
 
-```bash
 sudo ./full.sh
-```
 
 Executa:
 
-* Base + Web + Banco automaticamente
+- Base + Web + Banco
 
 ---
 
-## 🔐 Segurança
+## 🔐 Segurança (Resumo)
 
-O projeto implementa:
-
-* UFW ativo por padrão
-* Fail2Ban modular (`jail.d`)
-* Proteção SSH (base)
-* Proteção HTTP (web)
-* Proteção MySQL (db)
-* Banco sem uso de root para aplicações
-* Controle de acesso ao banco por IP
-* Porta 3306 liberada apenas para IPs autorizados
+- Firewall ativo (UFW)
+- Fail2Ban para proteção básica
+- Restrição de acesso ao banco por IP
+- Serviços expostos apenas quando necessário
 
 ---
 
-## 🧠 Fail2Ban (Arquitetura)
+## 🧠 Arquitetura
 
-O projeto utiliza configuração modular:
+O projeto segue separação por responsabilidade:
 
-```bash
-/etc/fail2ban/jail.d/
-```
+- base.sh → configuração comum
+- web.sh → serviços web
+- db.sh → serviços de banco
 
-Arquivos:
+Benefícios:
 
-* `base.conf` → proteção SSH
-* `web.conf` → proteção Apache
-* `mysql.conf` → proteção MariaDB
-
-Vantagens:
-
-* Sem conflito entre scripts
-* Independência entre serviços
-* Escalável e reutilizável
+- Reutilização
+- Independência entre scripts
+- Execução previsível
 
 ---
 
 ## 🔁 Idempotência
 
-Os scripts podem ser executados múltiplas vezes sem causar problemas:
+Os scripts podem ser executados múltiplas vezes sem:
 
-* Não reinstalam pacotes já existentes
-* Não duplicam configurações
-* Não quebram serviços ativos
+- Reinstalar pacotes
+- Duplicar configurações
+- Quebrar serviços existentes
 
 ---
 
 ## ⚠️ Observações
 
-* O script de banco pode remover acessos antigos (dependendo da escolha)
-* O MariaDB precisa de log ativo para Fail2Ban funcionar corretamente
-* O uso de `jail.d` evita conflitos com `jail.local`
+- O acesso ao banco pode ser restrito ou aberto conforme escolha durante execução
+- Algumas configurações dependem da ordem correta de serviços (ex: MariaDB antes do Fail2Ban)
+- Caso ocorra erro no Fail2Ban, verifique se o diretório existe:
+
+mkdir -p /etc/fail2ban/jail.d
+
+---
+
+## 🧹 Pós-provisionamento
+
+Os scripts são utilizados apenas durante o processo de provisionamento.
+
+Após a execução, o diretório do projeto pode ser removido do servidor:
+
+rm -rf deploy-servers
+
+Recomenda-se manter o projeto versionado (ex: GitHub) para reutilização futura ou novos ambientes.
 
 ---
 
 ## 🏷️ Versionamento
 
-O projeto segue versionamento semântico:
+Formato:
 
-```
 MAJOR.MINOR.PATCH
-```
 
-* **MAJOR** → mudanças incompatíveis
-* **MINOR** → novas funcionalidades
-* **PATCH** → correções
-
-### Versões atuais:
-
-* **v1.0.0** → estrutura inicial
-* **v1.1.0** → modularização (base, web, db)
-* **v1.2.0** → controle de acesso por IP
-* **v1.3.0** → integração com Fail2Ban (modular)
+- MAJOR → mudanças incompatíveis
+- MINOR → novas funcionalidades
+- PATCH → correções
 
 ---
 
