@@ -21,6 +21,11 @@ ufw --force enable
 
 install_if_not_exists fail2ban
 
+cat > /etc/fail2ban/jail.d/base.conf <<EOF
+[sshd]
+enabled = true
+EOF
+
 enable_service fail2ban
 
 install_if_not_exists rsyslog

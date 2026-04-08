@@ -16,15 +16,7 @@ install_if_not_exists php-mbstring
 if create_file_if_not_exists /etc/fail2ban/jail.local; then
   echo "[INFO] Criando configuração do Fail2Ban (web)"
 
-cat > /etc/fail2ban/jail.local <<EOF
-[DEFAULT]
-bantime = -1
-findtime = 10m
-maxretry = 3
-
-[sshd]
-enabled = true
-
+cat > /etc/fail2ban/jail.d/web.conf <<EOF
 [apache-auth]
 enabled = true
 
