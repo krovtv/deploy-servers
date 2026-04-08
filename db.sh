@@ -7,8 +7,18 @@ source ./base.sh
 # =========================
 # MariaDB
 # =========================
+
+echo "Instalando e habilitando caso nao esteja instalado."
 install_if_not_exists mariadb-server
 enable_service mariadb
+
+echo "[INFO] Configurando acesso ao MariaDB via firewall"
+
+# Libera apenas IPs autorizados
+ufw allow from 10.32.0.240 to any port 3306
+ufw allow from 10.32.0.252 to any port 3306
+
+echo "[INFO] Acesso liberado apenas para IPs especificos na porta 3306"
 
 # =========================
 # Abrir o mariadb para rede interna
