@@ -24,15 +24,19 @@ install_if_not_exists fail2ban
 # =========================
 # Configurar log do MariaDB
 # =========================
-
 MYSQL_CNF="/etc/mysql/mariadb.conf.d/50-server.cnf"
 
+mkdir -p /var/log/mysql
 
-# Adiciona log_error dentro do bloco [mysqld] se não existir
+if id "mysql" &>/dev/null; then
+    chown mysql:mysql /var/log/mysql
+fi
+
 if ! grep -q "^log_error" "$MYSQL_CNF"; then
     sed -i '/\[mysqld\]/a log_error = /var/log/mysql/error.log' "$MYSQL_CNF"
 fi
 
+systemctl restart mariadb
 # Reinicia MariaDB para aplicar
 enable_service mariadb
 systemctl restart mariadb
