@@ -88,7 +88,9 @@ done
 # IPs atuais no banco
 # =========================
 CURRENT_IPS=$(mariadb -u root -N -e "
-SELECT Host FROM mysql.user WHERE User='${DB_NAME}';
+SELECT Host FROM mysql.user 
+WHERE User='${DB_NAME}' 
+AND Host REGEXP '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$';
 ")
 
 # =========================
