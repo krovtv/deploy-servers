@@ -13,7 +13,7 @@ install_if_not_exists php-cli
 install_if_not_exists php-curl
 install_if_not_exists php-mbstring
 
-if create_file_if_not_exists /etc/fail2ban/jail.local; then
+if create_file_if_not_exists /etc/fail2ban/jail.d/web.conf; then
   echo "[INFO] Criando configuração do Fail2Ban (web)"
 
 cat > /etc/fail2ban/jail.d/web.conf <<EOF

@@ -55,7 +55,7 @@ systemctl restart mariadb
 # =========================
 install_if_not_exists fail2ban
 
-if create_file_if_not_exists /etc/fail2ban/jail.local; then
+if create_file_if_not_exists /etc/fail2ban/jail.d/mysql.conf; then
 cat > /etc/fail2ban/jail.d/mysql.conf <<EOF
 [mysqld-auth]
 enabled = true
