@@ -21,30 +21,6 @@ ufw --force enable
 
 install_if_not_exists fail2ban
 
-if create_file_if_not_exists /etc/fail2ban/jail.local; then
-cat > /etc/fail2ban/jail.local <<EOF
-[DEFAULT]
-bantime = -1
-findtime = 10m
-maxretry = 3
-
-[sshd]
-enabled = true
-
-[apache-auth]
-enabled = true
-
-[apache-badbots]
-enabled = true
-
-[apache-noscript]
-enabled = true
-
-[apache-overflows]
-enabled = true
-EOF
-fi
-
 enable_service fail2ban
 
 install_if_not_exists rsyslog
