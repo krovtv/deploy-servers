@@ -27,9 +27,6 @@ install_if_not_exists fail2ban
 
 MYSQL_CNF="/etc/mysql/mariadb.conf.d/50-server.cnf"
 
-# Garante diretório de log
-mkdir -p /var/log/mysql
-chown mysql:mysql /var/log/mysql
 
 # Adiciona log_error dentro do bloco [mysqld] se não existir
 if ! grep -q "^log_error" "$MYSQL_CNF"; then
