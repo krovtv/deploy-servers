@@ -21,6 +21,25 @@ ufw --force enable
 
 install_if_not_exists fail2ban
 
+# =========================
+# Configurar log do MariaDB
+# =========================
+
+MYSQL_CNF="/etc/mysql/mariadb.conf.d/50-server.cnf"
+
+# Garante diretório de log
+mkdir -p /var/log/mysql
+chown mysql:mysql /var/log/mysql
+
+# Adiciona log_error dentro do bloco [mysqld] se não existir
+if ! grep -q "^log_error" "$MYSQL_CNF"; then
+    sed -i '/\[mysqld\]/a log_error = /var/log/mysql/error.log' "$MYSQL_CNF"
+fi
+
+# Reinicia MariaDB para aplicar
+enable_service mariadb
+systemctl restart mariadb
+
 if create_file_if_not_exists /etc/fail2ban/jail.local; then
 cat > /etc/fail2ban/jail.local <<EOF
 [DEFAULT]
