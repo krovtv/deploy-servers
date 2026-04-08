@@ -24,12 +24,28 @@ install_if_not_exists fail2ban
 if create_file_if_not_exists /etc/fail2ban/jail.local; then
 cat > /etc/fail2ban/jail.local <<EOF
 [DEFAULT]
-bantime = 10m
+bantime = -1
 findtime = 10m
-maxretry = 5
+maxretry = 3
 
 [sshd]
 enabled = true
+
+[apache-auth]
+enabled = true
+
+[apache-badbots]
+enabled = true
+
+[apache-noscript]
+enabled = true
+
+[apache-overflows]
+enabled = true
+
+[mysqld-auth]
+enabled = true
+port = 3306
 EOF
 fi
 
