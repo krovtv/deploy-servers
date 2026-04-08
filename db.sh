@@ -27,6 +27,65 @@ fi
 
 systemctl restart mariadb
 
+
+# =========================
+# Configurar log do MariaDB (Fail2Ban)
+# =========================
+echo "[INFO] Configurando log do MariaDB"
+
+MYSQL_CNF="/etc/mysql/mariadb.conf.d/50-server.cnf"
+
+mkdir -p /var/log/mysql
+
+if id "mysql" &>/dev/null; then
+    chown mysql:mysql /var/log/mysql
+fi
+
+touch /var/log/mysql/error.log
+chown mysql:mysql /var/log/mysql/error.log
+
+if ! grep -q "^log_error" "$MYSQL_CNF"; then
+    sed -i '/\[mysqld\]/a log_error = /var/log/mysql/error.log' "$MYSQL_CNF"
+fi
+
+systemctl restart mariadb
+
+# =========================
+# Fail2Ban (agora com MySQL funcional)
+# =========================
+install_if_not_exists fail2ban
+
+if create_file_if_not_exists /etc/fail2ban/jail.local; then
+cat > /etc/fail2ban/jail.local <<EOF
+[DEFAULT]
+bantime = -1
+findtime = 10m
+maxretry = 3
+
+[sshd]
+enabled = true
+
+[apache-auth]
+enabled = true
+
+[apache-badbots]
+enabled = true
+
+[apache-noscript]
+enabled = true
+
+[apache-overflows]
+enabled = true
+
+[mysqld-auth]
+enabled = true
+port = 3306
+logpath = /var/log/mysql/error.log
+EOF
+fi
+
+enable_service fail2ban
+
 # =========================
 # Nome do banco
 # =========================

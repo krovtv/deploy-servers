@@ -21,22 +21,6 @@ ufw --force enable
 
 install_if_not_exists fail2ban
 
-# =========================
-# Configurar log do MariaDB
-# =========================
-MYSQL_CNF="/etc/mysql/mariadb.conf.d/50-server.cnf"
-
-mkdir -p /var/log/mysql
-
-if id "mysql" &>/dev/null; then
-    chown mysql:mysql /var/log/mysql
-fi
-
-if ! grep -q "^log_error" "$MYSQL_CNF"; then
-    sed -i '/\[mysqld\]/a log_error = /var/log/mysql/error.log' "$MYSQL_CNF"
-fi
-
-systemctl restart mariadb
 # Reinicia MariaDB para aplicar
 enable_service mariadb
 systemctl restart mariadb
@@ -62,10 +46,6 @@ enabled = true
 
 [apache-overflows]
 enabled = true
-
-[mysqld-auth]
-enabled = true
-port = 3306
 EOF
 fi
 
