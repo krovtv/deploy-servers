@@ -7,13 +7,13 @@ source ./base.sh
 install_if_not_exists apache2
 enable_service apache2
 
-install_if_not_exists php8.3
-install_if_not_exists php8.3-fpm
-install_if_not_exists php8.3-mysql
-install_if_not_exists php8.3-cli
-install_if_not_exists php8.3-curl
-install_if_not_exists php8.3-mbstring
-install_if_not_exists php8.3-zip
+install_if_not_exists php
+install_if_not_exists php-fpm
+install_if_not_exists php-mysql
+install_if_not_exists php-cli
+install_if_not_exists php-curl
+install_if_not_exists php-mbstring
+install_if_not_exists php-zip
 
 
 if create_file_if_not_exists /etc/fail2ban/jail.d/web.conf; then
