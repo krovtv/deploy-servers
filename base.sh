@@ -16,7 +16,7 @@ install_if_not_exists tree
 if grep -q "ipv6.disable=1" /etc/default/grub; then
     echo "Ipv6 já foi desativado, atualizar somente o grub"
 else 
-    sed -i 's/^GRUB_CMDLINE_LINUX="/GRUB_CMDLINE_LINUX=" ipv6.disable=1 /' /etc/default/grub
+    sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet ipv6.disable=1"/' /etc/default/grub
     update-grub
 fi
 
